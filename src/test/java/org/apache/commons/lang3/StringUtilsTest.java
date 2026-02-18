@@ -3181,27 +3181,33 @@ class StringUtilsTest extends AbstractLangTest {
 
     @Test
     void testHitBranch8() {
+        //REQUIREMENT: Input '\u1DA4' (Modifier small i with bar) must be converted to 'i'
         StringBuilder sb = new StringBuilder("\u1DA4");
 
         StringUtils.convertRemainingAccentCharacters(sb);
-
-        assertEquals("i", sb.toString());
+        
+        //ASSERTION: Verify the requirement is met
+        assertEquals("i", sb.toString(), "Branch 8 failed to convert \u1DA4 to 'i'");
     }
 
     @Test
     void testHitBranch9() {
+        // REQUIREMENT: Input '\u1DA7' (Modifier capital I with bar) must be converted to 'I'
         StringBuilder sb = new StringBuilder("\u1DA7");
 
         StringUtils.convertRemainingAccentCharacters(sb);
 
-        assertEquals("I", sb.toString());
+        //ASSERTION: Verify the requirement is met
+        assertEquals("I", sb.toString(), "Branch 9 failed to convert \u1DA7 to 'I'");
     }
     @Test
     void testhitBranch12() {
+        // REQUIREMENT: Input '\u1DB6' (Modifier small u with horn) must be converted to 'u'
         StringBuilder sb = new StringBuilder("\u1DB6");
 
         StringUtils.convertRemainingAccentCharacters(sb);
 
-        assertEquals("u", sb.toString());
+        //ASSERTION: Verify the requirement is met
+        assertEquals("u", sb.toString(), "Branch 12 failed to convert \u1DB6 to 'u'");
     }
 }
