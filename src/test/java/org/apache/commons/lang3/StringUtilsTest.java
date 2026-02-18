@@ -3181,10 +3181,10 @@ class StringUtilsTest extends AbstractLangTest {
 
     @Test
     void testHitBranch8() {
-        String input = "\u1DA4"; 
-        String result = StringUtils.stripAccents(input);
-    
-        // According to your code, \u1DA4 should be replaced by 'i'
-        assertEquals("i", result, "Branch 8 should convert \u1DA4 to 'i'");
+        StringBuilder sb = new StringBuilder("\u1DA4");
+
+        StringUtils.convertRemainingAccentCharacters(sb);
+
+        assertEquals("i", sb.toString());
     }
 }

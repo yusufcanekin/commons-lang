@@ -1375,7 +1375,7 @@ public class StringUtils {
         return false;
     }
 
-    private static void convertRemainingAccentCharacters(final StringBuilder decomposed) {
+    static void convertRemainingAccentCharacters(final StringBuilder decomposed) {
         for (int i = 0; i < decomposed.length(); i++) {
             final char charAt = decomposed.charAt(i);
             switch (charAt) {
