@@ -29,6 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.Validate;
 
+import java.util.BitSet;
+
 /**
  * Duration formatting utilities and constants. The following table describes the tokens
  * used in the pattern language for formatting.
@@ -209,6 +211,28 @@ public class DurationFormatUtils {
     private static final int SECONDS_PER_MINUTES = 60;
 
     private static final int HOURS_PER_DAY = 24;
+
+    // DIY branch coverage 
+    static final int LEXX_COV_BASE = 1000;  // Reserve 1000 for lexx
+    static final int LEXX_COV_SIZE = 100;   // fixed size per branch
+
+    // package-private so tests in same package can read
+    static final BitSet BRANCH_HITS = new BitSet(LEXX_COV_BASE + LEXX_COV_SIZE);
+
+    static void covHit(final int id) {
+        BRANCH_HITS.set(id);
+    }
+
+    static String covReportLexx() {
+        final StringBuilder sb = new StringBuilder("Branch coverage: DurationFormatUtils.lexx\n");
+        for (int id = LEXX_COV_BASE; id < LEXX_COV_BASE + LEXX_COV_SIZE; id++) {
+            if (BRANCH_HITS.get(id)) {
+                sb.append(id).append(": HIT\n");
+            }
+        }
+        return sb.toString();
+    }
+    /// DIY branch coverage - end
 
     /**
      * Pattern used with {@link FastDateFormat} and {@link SimpleDateFormat}
@@ -698,84 +722,131 @@ public class DurationFormatUtils {
         Token previous = null;
         boolean inOptional = false;
         int optionalIndex = -1;
+
+        if (format.length() == 0) {
+            covHit(1001);          // Loop skipped (branch coverage)
+        }
+
         for (int i = 0; i < format.length(); i++) {
+            if (i == 0) {
+                covHit(1000);          // Loop entered (branch coverage)
+            }
+
             final char ch = format.charAt(i);
             if (inLiteral && ch != '\'') {
+                covHit(1002);
                 buffer.append(ch); // buffer can't be null if inLiteral is true
                 continue;
+            } else {
+                covHit(1003);
             }
+
             String value = null;
             switch (ch) {
             // TODO: Need to handle escaping of '
             case '[':
+                covHit(1004);
                 if (inOptional) {
+                    covHit(1015);
                     throw new IllegalArgumentException("Nested optional block at index: " + i);
+                } else {
+                    covHit(1016);
                 }
                 optionalIndex++;
                 inOptional = true;
                 break;
             case ']':
+                covHit(1005);
                 if (!inOptional) {
+                    covHit(1017);
                     throw new IllegalArgumentException("Attempting to close unopened optional block at index: " + i);
+                } else {
+                    covHit(1018);
                 }
                 inOptional = false;
                 break;
             case '\'':
+                covHit(1006);
                 if (inLiteral) {
+                    covHit(1019);
                     buffer = null;
                     inLiteral = false;
                 } else {
+                    covHit(1020);
                     buffer = new StringBuilder();
                     list.add(new Token(buffer, inOptional, optionalIndex));
                     inLiteral = true;
                 }
                 break;
             case 'y':
+                covHit(1007);
                 value = y;
                 break;
             case 'M':
+                covHit(1008);
                 value = M;
                 break;
             case 'd':
+                covHit(1009);
                 value = d;
                 break;
             case 'H':
+                covHit(1010);
                 value = H;
                 break;
             case 'm':
+                covHit(1011);
                 value = m;
                 break;
             case 's':
+                covHit(1012);
                 value = s;
                 break;
             case 'S':
+                covHit(1013);
                 value = S;
                 break;
             default:
+                covHit(1014);
                 if (buffer == null) {
+                    covHit(1021);
                     buffer = new StringBuilder();
                     list.add(new Token(buffer, inOptional, optionalIndex));
+                } else {
+                    covHit(1022);
                 }
                 buffer.append(ch);
             }
 
             if (value != null) {
+                covHit(1023);
                 if (previous != null && previous.getValue().equals(value)) {
+                    covHit(1025);
                     previous.increment();
                 } else {
+                    covHit(1026);
                     final Token token = new Token(value, inOptional, optionalIndex);
                     list.add(token);
                     previous = token;
                 }
                 buffer = null;
+            } else {
+                covHit(1024);
             }
         }
         if (inLiteral) { // i.e. we have not found the end of the literal
+            covHit(1027);
             throw new IllegalArgumentException("Unmatched quote in format: " + format);
+        } else {
+            covHit(1028);
         }
         if (inOptional) { // i.e. we have not found the end of the literal
+            covHit(1029);
             throw new IllegalArgumentException("Unmatched optional in format: " + format);
+        } else {
+            covHit(1030);
         }
+        covHit(1031);          // Normal completion (branch coverage)
         return list.toArray(Token.EMPTY_ARRAY);
     }
 

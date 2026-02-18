@@ -36,6 +36,8 @@ import org.apache.commons.lang3.time.DurationFormatUtils.Token;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.DefaultTimeZone;
 
+import org.junit.jupiter.api.AfterAll;
+
 /**
  * Tests {@link DurationFormatUtils}.
  * <p>
@@ -45,6 +47,11 @@ import org.junitpioneer.jupiter.DefaultTimeZone;
 class DurationFormatUtilsTest extends AbstractLangTest {
 
     private static final int FOUR_YEARS = 365 * 3 + 366;
+
+    @AfterAll
+    static void printLexxCoverage() {
+        System.out.println(DurationFormatUtils.covReportLexx());
+    }
 
     private void assertEqualDuration(final String expected, final int[] start, final int[] end, final String format) {
         assertEqualDuration(null, expected, start, end, format);
