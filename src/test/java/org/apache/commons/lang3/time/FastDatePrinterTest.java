@@ -32,6 +32,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.AbstractLangTest;
 import org.apache.commons.lang3.SerializationUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.DefaultLocale;
 import org.junitpioneer.jupiter.DefaultTimeZone;
@@ -103,6 +104,13 @@ class FastDatePrinterTest extends AbstractLangTest {
     protected DatePrinter getInstance(final String format, final TimeZone timeZone, final Locale locale) {
         return new FastDatePrinter(format, timeZone, locale);
     }
+
+    @AfterAll
+    public static void printDIYReport() {
+        // Calls the method you added to FastDatePrinter.java
+        FastDatePrinter.reportDIYCoverage();
+    }
+
 
     @Test
     void test1806() {

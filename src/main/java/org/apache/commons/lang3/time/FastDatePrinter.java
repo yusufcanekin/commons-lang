@@ -97,6 +97,9 @@ public class FastDatePrinter implements DatePrinter, Serializable {
     /**
      * Inner class to output a constant single character.
      */
+    //--------------------------------------
+    public static boolean[] myCoverage = new boolean[14]; // this is for the flags that we want to setup -------
+    //---------------------------------------
     private static final class CharacterLiteral implements Rule {
         private final char value;
 
@@ -934,30 +937,39 @@ public class FastDatePrinter implements DatePrinter, Serializable {
         // specialized paths for 1 to 4 digits -> avoid the memory allocation from the temporary work array
         // see LANG-1248
         if (value < 10000) {
+            
             // less memory allocation path works for four digits or less
-
+            myCoverage[0] = true;
             int nDigits = 4;
             if (value < 1000) {
+                myCoverage[1] = true;
                 --nDigits;
                 if (value < 100) {
+                    myCoverage[2] = true;
                     --nDigits;
                     if (value < 10) {
+                        myCoverage[3] = true;
                         --nDigits;
                     }
                 }
             }
             // left zero pad
             for (int i = minFieldWidth - nDigits; i > 0; --i) {
+                myCoverage[4] = true;
+
                 buffer.append('0');
             }
 
             switch (nDigits) {
             case 4:
+                myCoverage[5] = true;
                 buffer.append((char) (value / 1000 + '0'));
                 value %= 1000;
                 // falls-through
             case 3:
+                myCoverage[6] = true;
                 if (value >= 100) {
+                    myCoverage[7] = true;
                     buffer.append((char) (value / 100 + '0'));
                     value %= 100;
                 } else {
@@ -965,7 +977,9 @@ public class FastDatePrinter implements DatePrinter, Serializable {
                 }
                 // falls-through
             case 2:
+                myCoverage[8] = true;
                 if (value >= 10) {
+                    myCoverage[9] = true;
                     buffer.append((char) (value / 10 + '0'));
                     value %= 10;
                 } else {
@@ -973,6 +987,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
                 }
                 // falls-through
             case 1:
+                myCoverage[10] = true;
                 buffer.append((char) (value + '0'));
             }
         } else {
@@ -982,22 +997,44 @@ public class FastDatePrinter implements DatePrinter, Serializable {
             final char[] work = new char[MAX_DIGITS];
             int digit = 0;
             while (value != 0) {
+                myCoverage[11] = true;
                 work[digit++] = (char) (value % 10 + '0');
                 value /= 10;
             }
 
             // pad with zeros
             while (digit < minFieldWidth) {
+                myCoverage[12] = true;
                 buffer.append('0');
                 --minFieldWidth;
             }
 
             // reverse
             while (--digit >= 0) {
+                myCoverage[13] = true;
                 buffer.append(work[digit]);
             }
         }
     }
+
+    // --------------------------
+    // --------------------------
+
+    public static void reportDIYCoverage() {
+    System.out.println("=== DIY Branch Coverage Report for appendFullDigits ===");
+    for (int i = 0; i < myCoverage.length; i++) {
+        String status = myCoverage[i] ? " [ HIT ] " : " [MISSED] ";
+        System.out.println("Branch ID " + i + status);
+    }
+    System.out.println("======================================================");
+    }
+
+    // --------------------------
+    // --------------------------
+
+
+
+
 
     static void clear() {
         timeZoneDisplayCache.clear();
