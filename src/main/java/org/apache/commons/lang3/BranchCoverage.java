@@ -39,13 +39,28 @@ public final class BranchCoverage {
     public static void report() {
         final TreeSet<String> all = new TreeSet<>(ALL);
         int hit = 0;
+
         System.out.println("\n=== DIY BRANCH COVERAGE ===");
-        for (final String id : all) {
-            final boolean ok = HIT.contains(id);
-            if (ok) hit++;
-            System.out.println((ok ? "[HIT ] " : "[MISS] ") + id);
+
+        java.io.File out = new java.io.File("target", "diy-coverage.txt");
+        out.getParentFile().mkdirs();
+
+        try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(out, false))) {
+            pw.println("=== DIY BRANCH COVERAGE ===");
+            for (final String id : all) {
+                final boolean ok = HIT.contains(id);
+                if (ok) hit++;
+                final String line = (ok ? "[HIT ] " : "[MISS] ") + id;
+                System.out.println(line);
+                pw.println(line);
+            }
+            final String summary = String.format("Hit %d/%d (%.1f%%)",
+                    hit, all.size(), all.isEmpty() ? 100.0 : (hit * 100.0 / all.size()));
+            System.out.println(summary);
+            pw.println(summary);
+        } catch (final java.io.IOException e) {
+            throw new RuntimeException(e);
         }
-        System.out.printf("Hit %d/%d (%.1f%%)%n", hit, all.size(),
-                all.isEmpty() ? 100.0 : (hit * 100.0 / all.size()));
     }
+
 }
