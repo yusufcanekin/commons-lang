@@ -46,6 +46,7 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.commons.lang3.function.Suppliers;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.text.WordUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -3176,5 +3177,14 @@ class StringUtilsTest extends AbstractLangTest {
 
         assertSame("ab/ab", StringUtils.wrapIfMissing("ab/ab", "ab"));
         assertSame("//x//", StringUtils.wrapIfMissing("//x//", "//"));
+    }
+
+    @Test
+    void testHitBranch8() {
+        String input = "\u1DA4"; 
+        String result = StringUtils.stripAccents(input);
+    
+        // According to your code, \u1DA4 should be replaced by 'i'
+        assertEquals("i", result, "Branch 8 should convert \u1DA4 to 'i'");
     }
 }
