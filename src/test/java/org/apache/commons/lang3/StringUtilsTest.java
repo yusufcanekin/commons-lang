@@ -3187,4 +3187,21 @@ class StringUtilsTest extends AbstractLangTest {
 
         assertEquals("i", sb.toString());
     }
+
+    @Test
+    void testHitBranch9() {
+        StringBuilder sb = new StringBuilder("\u1DA7");
+
+        StringUtils.convertRemainingAccentCharacters(sb);
+
+        assertEquals("I", sb.toString());
+    }
+    @Test
+    void testhitBranch12() {
+        StringBuilder sb = new StringBuilder("\u1DB6");
+
+        StringUtils.convertRemainingAccentCharacters(sb);
+
+        assertEquals("u", sb.toString());
+    }
 }
