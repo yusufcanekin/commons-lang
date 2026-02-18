@@ -31,9 +31,54 @@ public final class BranchCoverage {
 
     private BranchCoverage() {}
 
+    public static void register(final String id) {
+        if (id != null) {
+            ALL.add(id);
+        }
+    }
+
+    /**
+     * Marks an ID as executed.
+     *
+     * IMPORTANT: If the ID ends with "_true" or "_false", we automatically
+     * register the opposite ID into ALL so that the not-taken side can show as [MISS].
+     */
     public static void hit(final String id) {
-        ALL.add(id);
+        if (id == null) {
+            return;
+        }
+        register(id);
         HIT.add(id);
+
+        final String other = oppositeTrueFalse(id);
+        if (other != null) {
+            register(other);
+        }
+    }
+
+    /**
+     * Convenience helper: one call registers both and hits the taken side.
+     * Example: BranchCoverage.branch("StringUtils.levThr:null", s == null);
+     */
+    public static void branch(final String baseId, final boolean condition) {
+        if (baseId == null) {
+            return;
+        }
+        final String t = baseId + "_true";
+        final String f = baseId + "_false";
+        register(t);
+        register(f);
+        hit(condition ? t : f);
+    }
+
+    private static String oppositeTrueFalse(final String id) {
+        if (id.endsWith("_true")) {
+            return id.substring(0, id.length() - "_true".length()) + "_false";
+        }
+        if (id.endsWith("_false")) {
+            return id.substring(0, id.length() - "_false".length()) + "_true";
+        }
+        return null;
     }
 
     public static void report() {
@@ -42,14 +87,16 @@ public final class BranchCoverage {
 
         System.out.println("\n=== DIY BRANCH COVERAGE ===");
 
-        java.io.File out = new java.io.File("target", "diy-coverage.txt");
+        final java.io.File out = new java.io.File("target", "diy-coverage.txt");
         out.getParentFile().mkdirs();
 
         try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(out, false))) {
             pw.println("=== DIY BRANCH COVERAGE ===");
             for (final String id : all) {
                 final boolean ok = HIT.contains(id);
-                if (ok) hit++;
+                if (ok) {
+                    hit++;
+                }
                 final String line = (ok ? "[HIT ] " : "[MISS] ") + id;
                 System.out.println(line);
                 pw.println(line);
@@ -62,5 +109,4 @@ public final class BranchCoverage {
             throw new RuntimeException(e);
         }
     }
-
 }
