@@ -904,6 +904,23 @@ class StringUtilsTest extends AbstractLangTest {
         assertEquals(8, StringUtils.getLevenshteinDistance("zzzzzzzz", "hippo", Integer.MAX_VALUE));
         assertEquals(1, StringUtils.getLevenshteinDistance("hello", "hallo", Integer.MAX_VALUE));
     }
+    @Test
+    void testGetLevenshteinDistance_StringStringInt_IsSymmetric() {
+        // This pair also triggers the "swap" optimization internally depending on argument order.
+        assertEquals(1, StringUtils.getLevenshteinDistance("abcd", "abc", 1));
+        assertEquals(1, StringUtils.getLevenshteinDistance("abc", "abcd", 1));
+    }
+
+    @Test
+    void testGetLevenshteinDistance_CharSequenceThresholdBoundary() {
+        // Use non-String CharSequence implementations to ensure the method works for any CharSequence.
+        final CharSequence left = new StringBuilder("kitten");
+        final CharSequence right = java.nio.CharBuffer.wrap("sitting");
+
+        assertEquals(3, StringUtils.getLevenshteinDistance(left, right, 3));
+        assertEquals(-1, StringUtils.getLevenshteinDistance(left, right, 2));
+    }
+
 
     @Test
     void testGetLevenshteinDistance_StringStringNegativeInt() {
