@@ -904,6 +904,7 @@ class StringUtilsTest extends AbstractLangTest {
         assertEquals(8, StringUtils.getLevenshteinDistance("zzzzzzzz", "hippo", Integer.MAX_VALUE));
         assertEquals(1, StringUtils.getLevenshteinDistance("hello", "hallo", Integer.MAX_VALUE));
     }
+
     @Test
     void testGetLevenshteinDistance_StringStringInt_IsSymmetric() {
         // This pair also triggers the "swap" optimization internally depending on argument order.
@@ -920,6 +921,18 @@ class StringUtilsTest extends AbstractLangTest {
         assertEquals(3, StringUtils.getLevenshteinDistance(left, right, 3));
         assertEquals(-1, StringUtils.getLevenshteinDistance(left, right, 2));
     }
+
+   @Test
+   void testLevenshteinThreshold_n0_mGreaterThanThreshold_returnsMinusOne() {
+       assertEquals(-1, StringUtils.getLevenshteinDistance("", "abcd", 2));
+   }
+
+    @Test
+    void testLevenshteinThreshold_stripeOffTableTrue_returnsMinusOne() {
+        // Forces the stripe window to run off the DP table (jStart > jEnd) for small threshold.
+        assertEquals(-1, StringUtils.getLevenshteinDistance("a", "abcdefghij", 1));
+    }
+
 
 
     @Test
