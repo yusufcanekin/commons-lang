@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.function.Suppliers;
 import org.apache.commons.lang3.stream.LangCollectors;
 import org.apache.commons.lang3.stream.Streams;
-import org.apache.commons.lang3.BranchCoverage;
 
 /**
  * Operations on {@link String} that are
@@ -2386,13 +2385,10 @@ public class StringUtils {
     /** Validates inputs for the threshold-based Levenshtein distance variant. */
     private static void validateLevenshteinArgs(final CharSequence s, final CharSequence t, final int threshold) {
         if (s == null || t == null) {
-            BranchCoverage.hit("StringUtils.levThr:null_true");
             throw new IllegalArgumentException("Strings must not be null");
         }
-        BranchCoverage.hit("StringUtils.levThr:null_false");
 
         if (threshold < 0) {
-            BranchCoverage.hit("StringUtils.levThr:thresholdNeg_true");
             throw new IllegalArgumentException("Threshold must not be negative");
         }
     }
@@ -2404,15 +2400,11 @@ public class StringUtils {
     private static int levenshteinEarlyReturn(final int n, final int m, final int threshold) {
         // if one string is empty, the edit distance is necessarily the length of the other
         if (n == 0) {
-            BranchCoverage.hit("StringUtils.levThr:n0_true");
             if (m <= threshold) {
-                BranchCoverage.hit("StringUtils.levThr:n0_mLeThr_true");
                 return m;
             }
-            BranchCoverage.hit("StringUtils.levThr:n0_mLeThr_false");
             return -1;
         }
-        BranchCoverage.hit("StringUtils.levThr:n0_false");
 
         if (m == 0) {
             return n <= threshold ? n : -1;
@@ -2478,7 +2470,6 @@ public class StringUtils {
             int[] d) {
 
         // iterates through t
-        BranchCoverage.hit("StringUtils.levThr:outerLoop_enter");
         for (int j = 1; j <= m; j++) {
             final char jOfT = t.charAt(j - 1); // jth character of t
             d[0] = j;
@@ -2488,21 +2479,16 @@ public class StringUtils {
 
             // stripe can lead off the table if the strings are too different in size
             if (min > max) {
-                BranchCoverage.hit("StringUtils.levThr:stripeOffTable_true");
                 return -1;
             }
-            BranchCoverage.hit("StringUtils.levThr:stripeOffTable_false");
 
             // ignore entry left of leftmost
             if (min > 1) {
-                BranchCoverage.hit("StringUtils.levThr:minGt1_true");
                 d[min - 1] = Integer.MAX_VALUE;
             } else {
-                BranchCoverage.hit("StringUtils.levThr:minGt1_false");
             }
 
             // iterates through [min, max] in s
-            BranchCoverage.hit("StringUtils.levThr:innerLoop_enter");
             for (int i = min; i <= max; i++) {
                 d[i] = (s.charAt(i - 1) == jOfT)
                         ? p[i - 1] // diagonally left and up
@@ -2514,7 +2500,6 @@ public class StringUtils {
             p = d;
             d = tmp;
         }
-        BranchCoverage.hit("StringUtils.levThr:outerLoop_exit");
 
         return p[n];
     }
