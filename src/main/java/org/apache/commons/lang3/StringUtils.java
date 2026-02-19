@@ -22,9 +22,11 @@ import java.nio.charset.Charset;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -1374,69 +1376,33 @@ public class StringUtils {
         return false;
     }
 
-    private static void convertRemainingAccentCharacters(final StringBuilder decomposed) {
+    private static final Map<Character, Character> ACCENT_MAP = new HashMap<>();
+
+    static {
+        ACCENT_MAP.put('\u0141', 'L');
+        ACCENT_MAP.put('\u0142', 'l');
+        ACCENT_MAP.put('\u0110', 'D');
+        ACCENT_MAP.put('\u0111', 'd');
+        ACCENT_MAP.put('\u0197', 'I');
+        ACCENT_MAP.put('\u0268', 'i');
+        ACCENT_MAP.put('\u1D7B', 'I');
+        ACCENT_MAP.put('\u1DA4', 'i');
+        ACCENT_MAP.put('\u1DA7', 'I');
+        ACCENT_MAP.put('\u0244', 'U');
+        ACCENT_MAP.put('\u0289', 'u');
+        ACCENT_MAP.put('\u1D7E', 'U');
+        ACCENT_MAP.put('\u1DB6', 'u');
+        ACCENT_MAP.put('\u0166', 'T');
+        ACCENT_MAP.put('\u0167', 't');
+    }
+
+    static void convertRemainingAccentCharacters(final StringBuilder decomposed) {
         for (int i = 0; i < decomposed.length(); i++) {
-            final char charAt = decomposed.charAt(i);
-            switch (charAt) {
-            case '\u0141':
-                decomposed.setCharAt(i, 'L');
-                break;
-            case '\u0142':
-                decomposed.setCharAt(i, 'l');
-                break;
-            // D with stroke
-            case '\u0110':
-                // LATIN CAPITAL LETTER D WITH STROKE
-                decomposed.setCharAt(i, 'D');
-                break;
-            case '\u0111':
-                // LATIN SMALL LETTER D WITH STROKE
-                decomposed.setCharAt(i, 'd');
-                break;
-            // I with bar
-            case '\u0197':
-                decomposed.setCharAt(i, 'I');
-                break;
-            case '\u0268':
-                decomposed.setCharAt(i, 'i');
-                break;
-            case '\u1D7B':
-                decomposed.setCharAt(i, 'I');
-                break;
-            case '\u1DA4':
-                decomposed.setCharAt(i, 'i');
-                break;
-            case '\u1DA7':
-                decomposed.setCharAt(i, 'I');
-                break;
-            // U with bar
-            case '\u0244':
-                // LATIN CAPITAL LETTER U BAR
-                decomposed.setCharAt(i, 'U');
-                break;
-            case '\u0289':
-                // LATIN SMALL LETTER U BAR
-                decomposed.setCharAt(i, 'u');
-                break;
-            case '\u1D7E':
-                // LATIN SMALL CAPITAL LETTER U WITH STROKE
-                decomposed.setCharAt(i, 'U');
-                break;
-            case '\u1DB6':
-                // MODIFIER LETTER SMALL U BAR
-                decomposed.setCharAt(i, 'u');
-                break;
-            // T with stroke
-            case '\u0166':
-                // LATIN CAPITAL LETTER T WITH STROKE
-                decomposed.setCharAt(i, 'T');
-                break;
-            case '\u0167':
-                // LATIN SMALL LETTER T WITH STROKE
-                decomposed.setCharAt(i, 't');
-                break;
-            default:
-                break;
+            char original = decomposed.charAt(i);
+            Character replacement = ACCENT_MAP.get(original);
+
+            if (replacement != null) {
+                decomposed.setCharAt(i, replacement);
             }
         }
     }
