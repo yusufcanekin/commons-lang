@@ -1376,6 +1376,12 @@ public class StringUtils {
         return false;
     }
 
+    /**
+     * Refactoring for P+:
+     * Maps Unicode characters with accents to their ASCII equivalents 
+     * in order to reduce cyclomatic complexity from 17 to 3.
+     * used by the {@link #stripAccents(String)} method.
+     */    
     private static final Map<Character, Character> ACCENT_MAP = new HashMap<>();
 
     static {
@@ -1396,6 +1402,12 @@ public class StringUtils {
         ACCENT_MAP.put('\u0167', 't');
     }
 
+    /**
+     * Refactoring for P+:
+     * Converts remaining accented characters in the decomposed string to their ASCII equivalents using the ACCENT_MAP.
+     * @param decomposed  the StringBuilder containing the decomposed string with accents.
+     * 
+    */
     static void convertRemainingAccentCharacters(final StringBuilder decomposed) {
         for (int i = 0; i < decomposed.length(); i++) {
             char original = decomposed.charAt(i);
