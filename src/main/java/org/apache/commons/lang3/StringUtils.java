@@ -1379,66 +1379,99 @@ public class StringUtils {
             final char charAt = decomposed.charAt(i);
             switch (charAt) {
                 case '\u0141':
+                    //Branch 1
+                    BranchCoverage.hit("1");
                     decomposed.setCharAt(i, 'L');
                     break;
                 case '\u0142':
+                    //Branch 2
+                    BranchCoverage.hit("2");
                     decomposed.setCharAt(i, 'l');
                     break;
                 // D with stroke
                 case '\u0110':
+                    //Branch 3
+                    BranchCoverage.hit("3");
                     // LATIN CAPITAL LETTER D WITH STROKE
                     decomposed.setCharAt(i, 'D');
                     break;
                 case '\u0111':
+                    //Branch 4
+                    BranchCoverage.hit("4");
                     // LATIN SMALL LETTER D WITH STROKE
                     decomposed.setCharAt(i, 'd');
                     break;
                 // I with bar
                 case '\u0197':
+                    //Branch 5
+                    BranchCoverage.hit("5");
                     decomposed.setCharAt(i, 'I');
                     break;
                 case '\u0268':
+                    //Branch 6
+                    BranchCoverage.hit("6");
                     decomposed.setCharAt(i, 'i');
                     break;
                 case '\u1D7B':
+                    //Branch 7
+                    BranchCoverage.hit("7");
                     decomposed.setCharAt(i, 'I');
                     break;
                 case '\u1DA4':
+                    //Branch 8
+                    BranchCoverage.hit("8");
                     decomposed.setCharAt(i, 'i');
                     break;
                 case '\u1DA7':
+                    //Branch 9
+                    BranchCoverage.hit("9");
                     decomposed.setCharAt(i, 'I');
                     break;
                 // U with bar
                 case '\u0244':
+                    //Branch 10
+                    BranchCoverage.hit("10");
                     // LATIN CAPITAL LETTER U BAR
                     decomposed.setCharAt(i, 'U');
                     break;
                 case '\u0289':
+                    //Branch 11
+                    BranchCoverage.hit("11");
                     // LATIN SMALL LETTER U BAR
                     decomposed.setCharAt(i, 'u');
                     break;
                 case '\u1D7E':
+                    //Branch 12
+                    BranchCoverage.hit("12");
                     // LATIN SMALL CAPITAL LETTER U WITH STROKE
                     decomposed.setCharAt(i, 'U');
                     break;
                 case '\u1DB6':
+                    //Branch 13
+                    BranchCoverage.hit("13");
                     // MODIFIER LETTER SMALL U BAR
                     decomposed.setCharAt(i, 'u');
                     break;
                 // T with stroke
                 case '\u0166':
+                    //Branch 14
+                    BranchCoverage.hit("14");
                     // LATIN CAPITAL LETTER T WITH STROKE
                     decomposed.setCharAt(i, 'T');
                     break;
                 case '\u0167':
                     // LATIN SMALL LETTER T WITH STROKE
+                    //Branch 15 
+                    BranchCoverage.hit("15");
                     decomposed.setCharAt(i, 't');
                     break;
                 default:
+                    //Branch 16
+                    BranchCoverage.hit("16");
                     break;
             }
         }
+        BranchCoverage.report();
     }
 
     /**
