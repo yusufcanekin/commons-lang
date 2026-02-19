@@ -3179,6 +3179,10 @@ class StringUtilsTest extends AbstractLangTest {
         assertSame("//x//", StringUtils.wrapIfMissing("//x//", "//"));
     }
 
+    /**
+     * Branch coverage tests for {@link StringUtils#convertRemainingAccentCharacters(StringBuilder)} 
+     * for missed branches 8, 9, and 13.
+     */
     @Test
     void testHitBranch8() {
         //REQUIREMENT: Input '\u1DA4' (Modifier small i with bar) must be converted to 'i'
@@ -3201,13 +3205,24 @@ class StringUtilsTest extends AbstractLangTest {
         assertEquals("I", sb.toString(), "Branch 9 failed to convert \u1DA7 to 'I'");
     }
     @Test
-    void testhitBranch12() {
+    void testHitBranch13() {
         // REQUIREMENT: Input '\u1DB6' (Modifier small u with horn) must be converted to 'u'
         StringBuilder sb = new StringBuilder("\u1DB6");
 
         StringUtils.convertRemainingAccentCharacters(sb);
 
         //ASSERTION: Verify the requirement is met
-        assertEquals("u", sb.toString(), "Branch 12 failed to convert \u1DB6 to 'u'");
+        assertEquals("u", sb.toString(), "Branch 13 failed to convert \u1DB6 to 'u'");
+    }
+    //Path coverage test for branches 8, 9, and 13 together
+    @Test
+    void pathCoverageBranches8_9_13() {
+        //REQUIREMENT: Inputs '\u1DA4', '\u1DA7', and '\u1DB6' must be converted to 'i', 'I', and 'u' respectively
+        StringBuilder sb = new StringBuilder("\u1DA4\u1DA7\u1DB6");
+
+        StringUtils.convertRemainingAccentCharacters(sb);
+
+        //ASSERTION: Verify the requirements are met
+        assertEquals("iIu", sb.toString(), "Branches 8, 9, and 13 failed to convert \u1DA4, \u1DA7, and \u1DB6 to 'i', 'I', and 'u' respectively");
     }
 }
