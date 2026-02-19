@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BranchCoverage;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -922,12 +923,17 @@ public class EqualsBuilder implements Builder<Boolean> {
      * @return {@code this} instance.
      */
     public EqualsBuilder reflectionAppend(final Object lhs, final Object rhs) {
+        BranchCoverage.branch("reflApp:isEqualsCheck", !isEquals);
         if (!isEquals) {
             return this;
         }
+
+        BranchCoverage.branch("reflApp:refEquality", lhs == rhs);
         if (lhs == rhs) {
             return this;
         }
+
+        BranchCoverage.branch("reflApp:nullGuard", lhs == null || rhs == null);
         if (lhs == null || rhs == null) {
             isEquals = false;
             return this;
@@ -935,6 +941,7 @@ public class EqualsBuilder implements Builder<Boolean> {
 
         final Class<?> testClass = determineCommonClass(lhs, rhs);
 
+        BranchCoverage.branch("reflApp:testClassNull", testClass == null);
         if (testClass == null) {
             // The two classes are not related.
             isEquals = false;
@@ -942,14 +949,21 @@ public class EqualsBuilder implements Builder<Boolean> {
         }
 
         try {
-            if (testClass.isArray()) {
+            boolean isArray = testClass.isArray();
+            BranchCoverage.branch("reflApp:isArray", isArray);
+            if (isArray) {
                 append(lhs, rhs);
-            } else if (isBypassRegistered(lhs.getClass(), rhs.getClass())) {
-                isEquals = lhs.equals(rhs);
             } else {
-                appendFieldsInHierarchy(lhs, rhs, testClass);
+                boolean isBypass = isBypassRegistered(lhs.getClass(), rhs.getClass());
+                BranchCoverage.branch("reflApp:isBypass", isBypass);
+                if (isBypass) {
+                    isEquals = lhs.equals(rhs);
+                } else {
+                    appendFieldsInHierarchy(lhs, rhs, testClass);
+                }
             }
         } catch (final IllegalArgumentException e) {
+            BranchCoverage.hit("reflApp:catchIAE");
             // In this case, we tried to test a subclass vs. a superclass and
             // the subclass has ivars or the ivars are transient and
             // we are testing transients.
