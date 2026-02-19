@@ -947,11 +947,21 @@ public class FastDatePrinter implements DatePrinter, Serializable {
                 }
             }
             // left zero pad
-            for (int i = minFieldWidth - nDigits; i > 0; --i) {
-                buffer.append('0');
-            }
+            applyZeroPadding(buffer, minFieldWidth - nDigits);
+           appendOptimizedSmallDigits(buffer,value , nDigits);
+            
+        } else {
+            appendStandardLargeDigits(buffer,value,minFieldWidth);
 
-            switch (nDigits) {
+        }
+    }
+
+
+
+    
+private static void appendOptimizedSmallDigits(final Appendable buffer, int value, int nDigits) throws IOException {
+   
+switch (nDigits) {
             case 4:
                 buffer.append((char) (value / 1000 + '0'));
                 value %= 1000;
@@ -975,8 +985,17 @@ public class FastDatePrinter implements DatePrinter, Serializable {
             case 1:
                 buffer.append((char) (value + '0'));
             }
-        } else {
-            // more memory allocation path works for any digits
+
+
+}
+
+
+
+private static void appendStandardLargeDigits(final Appendable buffer, int value, int minFieldWidth) throws IOException {
+
+
+
+ // more memory allocation path works for any digits
 
             // build up decimal representation in reverse
             final char[] work = new char[MAX_DIGITS];
@@ -987,17 +1006,29 @@ public class FastDatePrinter implements DatePrinter, Serializable {
             }
 
             // pad with zeros
-            while (digit < minFieldWidth) {
-                buffer.append('0');
-                --minFieldWidth;
-            }
+            applyZeroPadding(buffer, minFieldWidth - digit);
 
             // reverse
             while (--digit >= 0) {
                 buffer.append(work[digit]);
             }
-        }
+
+}
+
+
+private static void applyZeroPadding(final Appendable buffer, int paddingCount) throws IOException {
+    while (paddingCount > 0) {
+        buffer.append('0');
+        paddingCount--;
     }
+}
+
+
+
+
+
+
+
 
     static void clear() {
         timeZoneDisplayCache.clear();
