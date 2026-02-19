@@ -30,43 +30,80 @@ import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.Validate;
 
 /**
- * Duration formatting utilities and constants. The following table describes the tokens
+ * Duration formatting utilities and constants. The following table describes
+ * the tokens
  * used in the pattern language for formatting.
  *
  * <table>
- *  <caption>Pattern Tokens</caption>
- *  <tr><th>character</th><th>duration element</th></tr>
- *  <tr><td>y</td><td>years</td></tr>
- *  <tr><td>M</td><td>months</td></tr>
- *  <tr><td>d</td><td>days</td></tr>
- *  <tr><td>H</td><td>hours</td></tr>
- *  <tr><td>m</td><td>minutes</td></tr>
- *  <tr><td>s</td><td>seconds</td></tr>
- *  <tr><td>S</td><td>milliseconds</td></tr>
- *  <tr><td>'text'</td><td>arbitrary text content</td></tr>
+ * <caption>Pattern Tokens</caption>
+ * <tr>
+ * <th>character</th>
+ * <th>duration element</th>
+ * </tr>
+ * <tr>
+ * <td>y</td>
+ * <td>years</td>
+ * </tr>
+ * <tr>
+ * <td>M</td>
+ * <td>months</td>
+ * </tr>
+ * <tr>
+ * <td>d</td>
+ * <td>days</td>
+ * </tr>
+ * <tr>
+ * <td>H</td>
+ * <td>hours</td>
+ * </tr>
+ * <tr>
+ * <td>m</td>
+ * <td>minutes</td>
+ * </tr>
+ * <tr>
+ * <td>s</td>
+ * <td>seconds</td>
+ * </tr>
+ * <tr>
+ * <td>S</td>
+ * <td>milliseconds</td>
+ * </tr>
+ * <tr>
+ * <td>'text'</td>
+ * <td>arbitrary text content</td>
+ * </tr>
  * </table>
  *
- * <strong>Note: It's not currently possible to include a single-quote in a format.</strong>
+ * <strong>Note: It's not currently possible to include a single-quote in a
+ * format.</strong>
  * <p>
  * Token values are printed using decimal digits.
- * A token character can be repeated to ensure that the field occupies a certain minimum
- * size. Values will be left-padded with 0 unless padding is disabled in the method invocation.
+ * A token character can be repeated to ensure that the field occupies a certain
+ * minimum
+ * size. Values will be left-padded with 0 unless padding is disabled in the
+ * method invocation.
  * </p>
  * <p>
- * Tokens can be marked as optional by surrounding them with brackets [ ]. These tokens will
- * only be printed if the token value is non-zero. Literals within optional blocks will only be
- * printed if the preceding non-literal token is non-zero. Leading optional literals will only
+ * Tokens can be marked as optional by surrounding them with brackets [ ]. These
+ * tokens will
+ * only be printed if the token value is non-zero. Literals within optional
+ * blocks will only be
+ * printed if the preceding non-literal token is non-zero. Leading optional
+ * literals will only
  * be printed if the following non-literal is non-zero.
- * Multiple optional blocks can be used to group literals with the desired token.
+ * Multiple optional blocks can be used to group literals with the desired
+ * token.
  * </p>
  * <p>
  * Notes on Optional Tokens:
  * </p>
  * <p>
- * <strong>Multiple optional tokens without literals can result in impossible to understand output.</strong>
+ * <strong>Multiple optional tokens without literals can result in impossible to
+ * understand output.</strong>
  * </p>
  * <p>
- * <strong>Patterns where all tokens are optional can produce empty strings.</strong>
+ * <strong>Patterns where all tokens are optional can produce empty
+ * strings.</strong>
  * </p>
  * <p>
  * See the following examples.
@@ -74,14 +111,62 @@ import org.apache.commons.lang3.Validate;
  *
  * <table>
  * <caption>Example Output</caption>
- * <tr><th>pattern</th><th>Duration.ofDays(1)</th><th>Duration.ofHours(1)</th><th>Duration.ofMinutes(1)</th><th>Duration.ZERO</th></tr>
- * <tr><td>d'd'H'h'm'm's's'</td><td>1d0h0m0s</td><td>0d1h0m0s</td><td>0d0h1m0s</td><td>0d0h0m0s</td></tr>
- * <tr><td>d'd'[H'h'm'm']s's'</td><td>1d0s</td><td>0d1h0s</td><td>0d1m0s</td><td>0d0s</td></tr>
- * <tr><td>[d'd'H'h'm'm']s's'</td><td>1d0s</td><td>1h0s</td><td>1m0s</td><td>0s</td></tr>
- * <tr><td>[d'd'H'h'm'm's's']</td><td>1d</td><td>1h</td><td>1m</td><td></td></tr>
- * <tr><td>['{'d'}']HH':'mm</td><td>{1}00:00</td><td>01:00</td><td>00:01</td><td>00:00</td></tr>
- * <tr><td>['{'dd'}']['&lt;'HH'&gt;']['('mm')']</td><td>{01}</td><td>&lt;01&gt;</td><td>(00)</td><td></td></tr>
- * <tr><td>[dHms]</td><td>1</td><td>1</td><td>1</td><td></td></tr>
+ * <tr>
+ * <th>pattern</th>
+ * <th>Duration.ofDays(1)</th>
+ * <th>Duration.ofHours(1)</th>
+ * <th>Duration.ofMinutes(1)</th>
+ * <th>Duration.ZERO</th>
+ * </tr>
+ * <tr>
+ * <td>d'd'H'h'm'm's's'</td>
+ * <td>1d0h0m0s</td>
+ * <td>0d1h0m0s</td>
+ * <td>0d0h1m0s</td>
+ * <td>0d0h0m0s</td>
+ * </tr>
+ * <tr>
+ * <td>d'd'[H'h'm'm']s's'</td>
+ * <td>1d0s</td>
+ * <td>0d1h0s</td>
+ * <td>0d1m0s</td>
+ * <td>0d0s</td>
+ * </tr>
+ * <tr>
+ * <td>[d'd'H'h'm'm']s's'</td>
+ * <td>1d0s</td>
+ * <td>1h0s</td>
+ * <td>1m0s</td>
+ * <td>0s</td>
+ * </tr>
+ * <tr>
+ * <td>[d'd'H'h'm'm's's']</td>
+ * <td>1d</td>
+ * <td>1h</td>
+ * <td>1m</td>
+ * <td></td>
+ * </tr>
+ * <tr>
+ * <td>['{'d'}']HH':'mm</td>
+ * <td>{1}00:00</td>
+ * <td>01:00</td>
+ * <td>00:01</td>
+ * <td>00:00</td>
+ * </tr>
+ * <tr>
+ * <td>['{'dd'}']['&lt;'HH'&gt;']['('mm')']</td>
+ * <td>{01}</td>
+ * <td>&lt;01&gt;</td>
+ * <td>(00)</td>
+ * <td></td>
+ * </tr>
+ * <tr>
+ * <td>[dHms]</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td>1</td>
+ * <td></td>
+ * </tr>
  * </table>
  * <p>
  * <strong>Note: Optional blocks cannot be nested.</strong>
@@ -103,7 +188,7 @@ public class DurationFormatUtils {
          * Helper method to determine if a set of tokens contain a value
          *
          * @param tokens set to look in
-         * @param value to look for
+         * @param value  to look for
          * @return boolean {@code true} if contained
          */
         static boolean containsTokenWithValue(final Token[] tokens, final Object value) {
@@ -117,8 +202,8 @@ public class DurationFormatUtils {
         /**
          * Wraps a token around a value. A value would be something like a 'Y'.
          *
-         * @param value value to wrap, non-null.
-         * @param optional whether the token is optional
+         * @param value         value to wrap, non-null.
+         * @param optional      whether the token is optional
          * @param optionalIndex the index of the optional token within the pattern
          */
         Token(final CharSequence value, final boolean optional, final int optionalIndex) {
@@ -236,18 +321,19 @@ public class DurationFormatUtils {
     /**
      * The internal method to do the formatting.
      *
-     * @param tokens  the tokens
-     * @param years  the number of years
-     * @param months  the number of months
-     * @param days  the number of days
-     * @param hours  the number of hours
-     * @param minutes  the number of minutes
-     * @param seconds  the number of seconds
-     * @param milliseconds  the number of millis
-     * @param padWithZeros  whether to pad
+     * @param tokens       the tokens
+     * @param years        the number of years
+     * @param months       the number of months
+     * @param days         the number of days
+     * @param hours        the number of hours
+     * @param minutes      the number of minutes
+     * @param seconds      the number of seconds
+     * @param milliseconds the number of millis
+     * @param padWithZeros whether to pad
      * @return the formatted string
      */
-    static String format(final Token[] tokens, final long years, final long months, final long days, final long hours, final long minutes,
+    static String format(final Token[] tokens, final long years, final long months, final long days, final long hours,
+            final long minutes,
             final long seconds,
             final long milliseconds, final boolean padWithZeros) {
         final StringBuilder buffer = new StringBuilder();
@@ -262,17 +348,17 @@ public class DurationFormatUtils {
             final boolean isLiteral = value instanceof StringBuilder;
             final int count = token.getCount();
             if (optionalIndex != token.optionalIndex) {
-              optionalIndex = token.optionalIndex;
-              if (optionalIndex > -1) {
-                //entering new optional block
-                optionalStart = buffer.length();
-                lastOutputZero = false;
-                inOptional = true;
-                firstOptionalNonLiteral = false;
-              } else {
-                //leaving optional block
-                inOptional = false;
-              }
+                optionalIndex = token.optionalIndex;
+                if (optionalIndex > -1) {
+                    // entering new optional block
+                    optionalStart = buffer.length();
+                    lastOutputZero = false;
+                    inOptional = true;
+                    firstOptionalNonLiteral = false;
+                } else {
+                    // leaving optional block
+                    inOptional = false;
+                }
             }
             if (isLiteral) {
                 if (!inOptional || !lastOutputZero) {
@@ -327,7 +413,7 @@ public class DurationFormatUtils {
                 }
                 lastOutputSeconds = false;
             }
-            //as soon as we hit first nonliteral in optional, check for literal prefix
+            // as soon as we hit first nonliteral in optional, check for literal prefix
             if (inOptional && !isLiteral && !firstOptionalNonLiteral) {
                 firstOptionalNonLiteral = true;
                 if (lastOutputZero) {
@@ -339,13 +425,16 @@ public class DurationFormatUtils {
     }
 
     /**
-     * Formats the time gap as a string, using the specified format, and padding with zeros.
+     * Formats the time gap as a string, using the specified format, and padding
+     * with zeros.
      *
-     * <p>This method formats durations using the days and lower fields of the
-     * format pattern. Months and larger are not used.</p>
+     * <p>
+     * This method formats durations using the days and lower fields of the
+     * format pattern. Months and larger are not used.
+     * </p>
      *
-     * @param durationMillis  the duration to format
-     * @param format  the way in which to format the duration, not null
+     * @param durationMillis the duration to format
+     * @param format         the way in which to format the duration, not null
      * @return the formatted duration, not null
      * @throws IllegalArgumentException if durationMillis is negative
      */
@@ -357,12 +446,15 @@ public class DurationFormatUtils {
      * Formats the time gap as a string, using the specified format.
      * Padding the left-hand side side of numbers with zeroes is optional.
      *
-     * <p>This method formats durations using the days and lower fields of the
-     * format pattern. Months and larger are not used.</p>
+     * <p>
+     * This method formats durations using the days and lower fields of the
+     * format pattern. Months and larger are not used.
+     * </p>
      *
-     * @param durationMillis  the duration to format
-     * @param format  the way in which to format the duration, not null
-     * @param padWithZeros  whether to pad the left-hand side side of numbers with 0's
+     * @param durationMillis the duration to format
+     * @param format         the way in which to format the duration, not null
+     * @param padWithZeros   whether to pad the left-hand side side of numbers with
+     *                       0's
      * @return the formatted duration, not null
      * @throws IllegalArgumentException if durationMillis is negative
      */
@@ -400,9 +492,11 @@ public class DurationFormatUtils {
     /**
      * Formats the time gap as a string.
      *
-     * <p>The format used is ISO 8601-like: {@code HH:mm:ss.SSS}.</p>
+     * <p>
+     * The format used is ISO 8601-like: {@code HH:mm:ss.SSS}.
+     * </p>
      *
-     * @param durationMillis  the duration to format
+     * @param durationMillis the duration to format
      * @return the formatted duration, not null
      * @throws IllegalArgumentException if durationMillis is negative
      */
@@ -413,12 +507,16 @@ public class DurationFormatUtils {
     /**
      * Formats the time gap as a string.
      *
-     * <p>The format used is the ISO 8601 period format.</p>
+     * <p>
+     * The format used is the ISO 8601 period format.
+     * </p>
      *
-     * <p>This method formats durations using the days and lower fields of the
-     * ISO format pattern, such as P7D6TH5M4.321S.</p>
+     * <p>
+     * This method formats durations using the days and lower fields of the
+     * ISO format pattern, such as P7D6TH5M4.321S.
+     * </p>
      *
-     * @param durationMillis  the duration to format
+     * @param durationMillis the duration to format
      * @return the formatted duration, not null
      * @throws IllegalArgumentException if durationMillis is negative
      */
@@ -429,19 +527,22 @@ public class DurationFormatUtils {
     /**
      * Formats an elapsed time into a pluralization correct string.
      *
-     * <p>This method formats durations using the days and lower fields of the
-     * format pattern. Months and larger are not used.</p>
+     * <p>
+     * This method formats durations using the days and lower fields of the
+     * format pattern. Months and larger are not used.
+     * </p>
      *
-     * @param durationMillis  the elapsed time to report in milliseconds
+     * @param durationMillis               the elapsed time to report in
+     *                                     milliseconds
      * @param suppressLeadingZeroElements  suppresses leading 0 elements
-     * @param suppressTrailingZeroElements  suppresses trailing 0 elements
+     * @param suppressTrailingZeroElements suppresses trailing 0 elements
      * @return the formatted text in days/hours/minutes/seconds, not null
      * @throws IllegalArgumentException if durationMillis is negative
      */
     public static String formatDurationWords(
-        final long durationMillis,
-        final boolean suppressLeadingZeroElements,
-        final boolean suppressTrailingZeroElements) {
+            final long durationMillis,
+            final boolean suppressLeadingZeroElements,
+            final boolean suppressTrailingZeroElements) {
 
         // This method is generally replaceable by the format method, but
         // there are a series of tweaks and special cases that require
@@ -503,9 +604,9 @@ public class DurationFormatUtils {
      * Formats the time gap as a string, using the specified format.
      * Padding the left-hand side side of numbers with zeroes is optional.
      *
-     * @param startMillis  the start of the duration
-     * @param endMillis  the end of the duration
-     * @param format  the way in which to format the duration, not null
+     * @param startMillis the start of the duration
+     * @param endMillis   the end of the duration
+     * @param format      the way in which to format the duration, not null
      * @return the formatted duration, not null
      * @throws IllegalArgumentException if startMillis is greater than endMillis
      */
@@ -514,30 +615,37 @@ public class DurationFormatUtils {
     }
 
     /**
-     * <p>Formats the time gap as a string, using the specified format.
+     * <p>
+     * Formats the time gap as a string, using the specified format.
      * Padding the left-hand side side of numbers with zeroes is optional and
      * the time zone may be specified.
      *
-     * <p>When calculating the difference between months/days, it chooses to
+     * <p>
+     * When calculating the difference between months/days, it chooses to
      * calculate months first. So when working out the number of months and
      * days between January 15th and March 10th, it choose 1 month and
      * 23 days gained by choosing January-&gt;February = 1 month and then
      * calculating days forwards, and not the 1 month and 26 days gained by
      * choosing March -&gt; February = 1 month and then calculating days
-     * backwards.</p>
+     * backwards.
+     * </p>
      *
-     * <p>For more control, the <a href="https://www.joda.org/joda-time/">Joda-Time</a>
-     * library is recommended.</p>
+     * <p>
+     * For more control, the <a href="https://www.joda.org/joda-time/">Joda-Time</a>
+     * library is recommended.
+     * </p>
      *
      * @param startMillis  the start of the duration
-     * @param endMillis  the end of the duration
-     * @param format  the way in which to format the duration, not null
-     * @param padWithZeros  whether to pad the left-hand side side of numbers with 0's
-     * @param timezone  the millis are defined in
+     * @param endMillis    the end of the duration
+     * @param format       the way in which to format the duration, not null
+     * @param padWithZeros whether to pad the left-hand side side of numbers with
+     *                     0's
+     * @param timezone     the millis are defined in
      * @return the formatted duration, not null
      * @throws IllegalArgumentException if startMillis is greater than endMillis
      */
-    public static String formatPeriod(final long startMillis, final long endMillis, final String format, final boolean padWithZeros,
+    public static String formatPeriod(final long startMillis, final long endMillis, final String format,
+            final boolean padWithZeros,
             final TimeZone timezone) {
         Validate.isTrue(startMillis <= endMillis, "startMillis must not be greater than endMillis");
 
@@ -671,10 +779,12 @@ public class DurationFormatUtils {
     /**
      * Formats the time gap as a string.
      *
-     * <p>The format used is the ISO 8601 period format.</p>
+     * <p>
+     * The format used is the ISO 8601 period format.
+     * </p>
      *
-     * @param startMillis  the start of the duration to format
-     * @param endMillis  the end of the duration to format
+     * @param startMillis the start of the duration to format
+     * @param endMillis   the end of the duration to format
      * @return the formatted duration, not null
      * @throws IllegalArgumentException if startMillis is greater than endMillis
      */
@@ -685,51 +795,103 @@ public class DurationFormatUtils {
     /**
      * Parses a classic date format string into Tokens
      *
-     * @param format  the format to parse, not null
-     * @return array of Token[]
+     * @param format the format to parse, not null
+     * @return the parsed tokens
      */
     static Token[] lexx(final String format) {
-        final ArrayList<Token> list = new ArrayList<>(format.length());
+        final LexxState st = new LexxState(format.length());
 
-        boolean inLiteral = false;
-        // Although the buffer is stored in a Token, the Tokens are only
-        // used internally, so cannot be accessed by other threads
-        StringBuilder buffer = null;
-        Token previous = null;
-        boolean inOptional = false;
-        int optionalIndex = -1;
         for (int i = 0; i < format.length(); i++) {
-            final char ch = format.charAt(i);
-            if (inLiteral && ch != '\'') {
-                buffer.append(ch); // buffer can't be null if inLiteral is true
+            if (handleLiteralChar(st, format.charAt(i))) {
                 continue;
             }
-            String value = null;
-            switch (ch) {
+            handleNonLiteralChar(st, format.charAt(i), i);
+        }
+
+        validateLexxEnd(format, st);
+        return st.list.toArray(Token.EMPTY_ARRAY);
+    }
+
+    /**
+     * Holds the mutable parsing state used by {@link #lexx(String)}.
+     */
+    private static final class LexxState {
+        final ArrayList<Token> list;
+        boolean inLiteral;
+        StringBuilder buffer;
+        Token previous;
+        boolean inOptional;
+        int optionalIndex = -1;
+
+        LexxState(final int formatLength) {
+            this.list = new ArrayList<>(formatLength);
+        }
+    }
+
+    /**
+     * Consumes a character while inside a quoted literal.
+     * 
+     * <p>
+     * Appends the character to the current literal buffer when in literal mode
+     * and the character is not a quote.
+     * </p>
+     * 
+     * @param st the current parsing state
+     * @param ch the current character
+     * @return {@code true} if the character was consumed as part of a literal
+     */
+    private static boolean handleLiteralChar(final LexxState st, final char ch) {
+        if (st.inLiteral && ch != '\'') {
+            // buffer can't be null if inLiteral is true
+            st.buffer.append(ch);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Processes a character when not inside a quoted literal.
+     *
+     * <p>
+     * Handles optional block markers ({@code '['} and {@code ']'}), quote toggling
+     * ({@code '\''}), pattern tokens (y, M, d, H, m, s, S), and literal characters.
+     * </p>
+     *
+     * @param st the current parsing state
+     * @param ch the current character
+     * @param i  the character index in the format string
+     * @throws IllegalArgumentException if an optional block is nested or closed without being opened
+     */
+    private static void handleNonLiteralChar(final LexxState st, final char ch, final int i) {
+        String value = null;
+        switch (ch) {
             // TODO: Need to handle escaping of '
             case '[':
-                if (inOptional) {
+                if (st.inOptional) {
                     throw new IllegalArgumentException("Nested optional block at index: " + i);
                 }
-                optionalIndex++;
-                inOptional = true;
-                break;
+                st.optionalIndex++;
+                st.inOptional = true;
+                return;
+
             case ']':
-                if (!inOptional) {
+                if (!st.inOptional) {
                     throw new IllegalArgumentException("Attempting to close unopened optional block at index: " + i);
                 }
-                inOptional = false;
-                break;
+                st.inOptional = false;
+                return;
+
             case '\'':
-                if (inLiteral) {
-                    buffer = null;
-                    inLiteral = false;
+                if (st.inLiteral) {
+                    st.buffer = null;
+                    st.inLiteral = false;
                 } else {
-                    buffer = new StringBuilder();
-                    list.add(new Token(buffer, inOptional, optionalIndex));
-                    inLiteral = true;
+                    st.buffer = new StringBuilder();
+                    st.list.add(new Token(st.buffer, st.inOptional, st.optionalIndex));
+                    st.inLiteral = true;
                 }
-                break;
+                return;
+
             case 'y':
                 value = y;
                 break;
@@ -751,41 +913,51 @@ public class DurationFormatUtils {
             case 'S':
                 value = S;
                 break;
-            default:
-                if (buffer == null) {
-                    buffer = new StringBuilder();
-                    list.add(new Token(buffer, inOptional, optionalIndex));
-                }
-                buffer.append(ch);
-            }
 
-            if (value != null) {
-                if (previous != null && previous.getValue().equals(value)) {
-                    previous.increment();
-                } else {
-                    final Token token = new Token(value, inOptional, optionalIndex);
-                    list.add(token);
-                    previous = token;
+            default:
+                if (st.buffer == null) {
+                    st.buffer = new StringBuilder();
+                    st.list.add(new Token(st.buffer, st.inOptional, st.optionalIndex));
                 }
-                buffer = null;
-            }
+                st.buffer.append(ch);
+                return;
         }
-        if (inLiteral) { // i.e. we have not found the end of the literal
+
+        // value != null → emit/merge token
+        if (st.previous != null && st.previous.getValue().equals(value)) {
+            st.previous.increment();
+        } else {
+            final Token token = new Token(value, st.inOptional, st.optionalIndex);
+            st.list.add(token);
+            st.previous = token;
+        }
+        st.buffer = null;
+    }
+
+    /**
+     * Validates that {@link #lexx(String)} finished in a consistent state.
+     *
+     * @param format the original format string
+     * @param st     the final parsing state
+     * @throws IllegalArgumentException if the format contains an unmatched quote or optional block
+     */
+    private static void validateLexxEnd(final String format, final LexxState st) {
+        if (st.inLiteral) { // i.e. we have not found the end of the literal.
             throw new IllegalArgumentException("Unmatched quote in format: " + format);
         }
-        if (inOptional) { // i.e. we have not found the end of the literal
+        if (st.inOptional) { // i.e. we have not found the end of the literal.
             throw new IllegalArgumentException("Unmatched optional in format: " + format);
         }
-        return list.toArray(Token.EMPTY_ARRAY);
     }
 
     /**
      * Converts a {@code long} to a {@link String} with optional
      * zero padding.
      *
-     * @param value the value to convert
+     * @param value        the value to convert
      * @param padWithZeros whether to pad with zeroes
-     * @param count the size to pad to (ignored if {@code padWithZeros} is false)
+     * @param count        the size to pad to (ignored if {@code padWithZeros} is
+     *                     false)
      * @return the string result
      */
     private static String paddedValue(final long value, final boolean padWithZeros, final int count) {
@@ -794,10 +966,13 @@ public class DurationFormatUtils {
     }
 
     /**
-     * DurationFormatUtils instances should NOT be constructed in standard programming.
+     * DurationFormatUtils instances should NOT be constructed in standard
+     * programming.
      *
-     * <p>This constructor is public to permit tools that require a JavaBean instance
-     * to operate.</p>
+     * <p>
+     * This constructor is public to permit tools that require a JavaBean instance
+     * to operate.
+     * </p>
      *
      * @deprecated TODO Make private in 4.0.
      */
