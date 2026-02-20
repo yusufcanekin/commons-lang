@@ -1415,9 +1415,7 @@ public class StringUtils {
 
             if (replacement != null) {
                 decomposed.setCharAt(i, replacement);
-            }
-        }
-    }
+   
 
     /**
      * Counts how many times the char appears in the given string.
@@ -2366,6 +2364,7 @@ public class StringUtils {
         if (s == null || t == null) {
             throw new IllegalArgumentException("Strings must not be null");
         }
+
         if (threshold < 0) {
             throw new IllegalArgumentException("Threshold must not be negative");
         }
@@ -2378,8 +2377,12 @@ public class StringUtils {
     private static int levenshteinEarlyReturn(final int n, final int m, final int threshold) {
         // if one string is empty, the edit distance is necessarily the length of the other
         if (n == 0) {
-            return m <= threshold ? m : -1;
+            if (m <= threshold) {
+                return m;
+            }
+            return -1;
         }
+
         if (m == 0) {
             return n <= threshold ? n : -1;
         }
@@ -2459,6 +2462,7 @@ public class StringUtils {
             // ignore entry left of leftmost
             if (min > 1) {
                 d[min - 1] = Integer.MAX_VALUE;
+            } else {
             }
 
             // iterates through [min, max] in s
